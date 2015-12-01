@@ -15,6 +15,8 @@
 #define __MYINTERPRETER_H__
 #include "Arduino.h"
 
+#define USE_DELEGATES
+
 enum ERRORS {
   STOPPED = 10,
   FOUND_CONTINUE = 1,
@@ -30,22 +32,40 @@ struct ConstValue {
   int   val;
 };
 
+#ifdef USE_DELEGATES
+typedef Delegate<int(int)> func1Delegate;
+typedef Delegate<int(int, int)> func2Delegate;
+typedef Delegate<int(int, int, int)> func3Delegate;
+#endif
+
 struct Function1 {
   char *name;
   int   len;
+#ifdef USE_DELEGATES
+  func1Delegate func;
+#else
   int (*func)(int);
+#endif
 };
 
 struct Function2 {
   char *name;
   int   len;
+#ifdef USE_DELEGATES
+  func2Delegate func;
+#else
   int (*func)(int, int);
+#endif
 };
 
 struct Function3 {
   char *name;
   int   len;
+#ifdef USE_DELEGATES
+  func3Delegate func;
+#else
   int (*func)(int, int, int);
+#endif
 };
 
 class MyInterpreter
@@ -54,9 +74,16 @@ class MyInterpreter
     MyInterpreter();
     ~MyInterpreter() {};
 
+#ifdef USE_DELEGATES
+    void registerFunc1(char *name, func1Delegate func);
+    void registerFunc2(char *name, func2Delegate func);
+    void registerFunc3(char *name, func3Delegate func);
+#else
     void registerFunc1(char *name, int (*func)(int));
     void registerFunc2(char *name, int (*func)(int, int));
     void registerFunc3(char *name, int (*func)(int, int, int));
+#endif
+
     void setVariable(char variable, int value);
     int run(char *prg, int len);
 

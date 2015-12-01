@@ -37,7 +37,11 @@ MyInterpreter::MyInterpreter()
   reportProgPos = 0;
 };
 
+#ifdef USE_DELEGATES
+void MyInterpreter::registerFunc1(char *name, func1Delegate func)
+#else
 void MyInterpreter::registerFunc1(char *name, int (*func)(int))
+#endif
 {
   struct Function1 f;
   f.len = strlen(name) + 1; // +1 for '('
@@ -54,7 +58,11 @@ void MyInterpreter::registerFunc1(char *name, int (*func)(int))
   func1Handlers.add(f);
 }
 
+#ifdef USE_DELEGATES
+void MyInterpreter::registerFunc2(char *name, func2Delegate func)
+#else
 void MyInterpreter::registerFunc2(char *name, int (*func)(int, int))
+#endif
 {
   struct Function2 f;
   f.len = strlen(name) + 1; // +1 for '('
@@ -71,7 +79,11 @@ void MyInterpreter::registerFunc2(char *name, int (*func)(int, int))
   func2Handlers.add(f);
 }
 
+#ifdef USE_DELEGATES
+void MyInterpreter::registerFunc3(char *name, func3Delegate func)
+#else
 void MyInterpreter::registerFunc3(char *name, int (*func)(int, int, int))
+#endif
 {
   struct Function3 f;
   f.len = strlen(name) + 1; // +1 for '('
@@ -272,7 +284,11 @@ int MyInterpreter::eval2(char *s, int len, int *val)
 	if (eval2(p, s-p-1, &v1) != 0)
 	  return ERROR_SYNTAX;
 	
-	v = (*f->func)(v1);
+#ifdef USE_DELEGATES
+	v = f->func(v1);
+#else
+        v = (*f->func)(v1);
+#endif
       }
     }
 
@@ -311,7 +327,11 @@ int MyInterpreter::eval2(char *s, int len, int *val)
 	if (eval2(p, s-p-1, &v2) != 0)
 	  return ERROR_SYNTAX;
 
-	v = (*f->func)(v1, v2);
+#ifdef USE_DELEGATES
+	v = f->func(v1, v2);
+#else
+        v = (*f->func)(v1, v2);
+#endif
         break;
       }
     }
@@ -366,7 +386,11 @@ int MyInterpreter::eval2(char *s, int len, int *val)
 	if (eval2(p, s-p-1, &v3) != 0)
 	  return ERROR_SYNTAX;
 
-	v = (*f->func)(v1, v2, v3);
+#ifdef USE_DELEGATES
+	v = f->func(v1, v2, v3);
+#else
+        v = (*f->func)(v1, v2, v3);
+#endif
         break;
       }
     }
