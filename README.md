@@ -2,6 +2,10 @@
 
 Original code can be found on http://n.mtng.org/ele/arduino/iarduino.html
 
+Here's an example:
+
+```
+//Create the object
 MyInterpreter interpreter;
 
 //Provide some handlers
@@ -28,5 +32,7 @@ interpreter.setVariable('v', atoi(message.getString(convBuf)));
 
 //Generate the script itself
 char *progBuf = (char *)"if(n==40){if(s==0){print(n);print(s);if(v%2==0){print(v);updateSensorState(n,1,0);}else{updateSensorState(n,1,1);}}}";
-interpreter.run(progBuf, strlen(progBuf));
 
+//And finally execute
+interpreter.run(progBuf, strlen(progBuf));
+```
