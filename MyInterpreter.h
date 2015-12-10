@@ -85,7 +85,12 @@ class MyInterpreter
 #endif
 
     void setVariable(char variable, int value);
-    int run(char *prg, int len);
+
+#ifndef DISABLE_SPIFFS
+    bool loadFile(char *fileName);
+#endif
+    bool load(char *prg, int len);
+    void run();
 
   protected:
     void printError(int err);
@@ -93,8 +98,11 @@ class MyInterpreter
     char *skipSpace(char *s, char *e);
     void writeS(const char *s, int len);
     int stepRun();
+    int run(char *prg, int len);
 
   private:
+    char scriptBuf[513];
+    int scriptLen;
     int variables[26];
     Vector<struct Function1> func1Handlers;
     Vector<struct Function2> func2Handlers;

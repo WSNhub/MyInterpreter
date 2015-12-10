@@ -35,6 +35,9 @@ MyInterpreter::MyInterpreter()
   runDelay = 0;
   runStep = 0;
   reportProgPos = 0;
+
+  scriptBuf[0] = 0;
+  scriptLen = 0;
 };
 
 #ifdef USE_DELEGATES
@@ -1007,3 +1010,48 @@ void MyInterpreter::writeS(const char *s, int len)
   Serial.print(s);
 }
 
+bool MyInterpreter::load(char *prg, int len)
+{
+    if (len > 512)
+    {
+        debugf("Scripts exceeds max length of 512 bytes");
+        return false;
+    }
+
+    scriptLen = len;
+    memcpy(scriptBuf, prg, len);
+    scriptBuf[scriptLen] = 0;
+
+    return true;
+}
+
+#ifndef DISABLE_SPIFFS
+bool MyInterpreter::loadFile(char *fileName)
+{
+    if (!fileExist(fileName))
+    {
+        debugf("Script file %s does not exist", fileName);
+        return false;
+    }
+
+    if (fileGetSize(fileName) > 512)
+    {
+        debugf("Scripts exceeds max length of 512 bytes");
+        return false;
+    }
+
+    scriptLen = fileGetSize(fileName);
+    fileGetContent(fileName, scriptBuf, sizeof(scriptBuf));
+    scriptBuf[scriptLen] = 0;
+
+    return true;
+}
+#endif
+
+void MyInterpreter::run()
+{
+    if (!scriptLen)
+        return;
+
+    run(scriptBuf, scriptLen);
+}
