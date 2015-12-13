@@ -101,7 +101,7 @@ class MyInterpreter
     int run(char *prg, int len);
 
   private:
-    char scriptBuf[513];
+    char scriptBuf[1025];
     int scriptLen;
     int variables[26];
     Vector<struct Function1> func1Handlers;

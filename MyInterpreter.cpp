@@ -1012,9 +1012,9 @@ void MyInterpreter::writeS(const char *s, int len)
 
 bool MyInterpreter::load(char *prg, int len)
 {
-    if (len > 512)
+    if (len > sizeof(scriptBuf) - 1)
     {
-        debugf("Scripts exceeds max length of 512 bytes");
+        debugf("Scripts exceeds max length of %d bytes", sizeof(scriptBuf) - 1);
         return false;
     }
 
@@ -1034,9 +1034,9 @@ bool MyInterpreter::loadFile(char *fileName)
         return false;
     }
 
-    if (fileGetSize(fileName) > 512)
+    if (fileGetSize(fileName) > sizeof(scriptBuf) - 1)
     {
-        debugf("Scripts exceeds max length of 512 bytes");
+        debugf("Scripts exceeds max length of %d bytes", sizeof(scriptBuf) - 1);
         return false;
     }
 
